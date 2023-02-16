@@ -6,7 +6,7 @@
 /*   By: esteiner <esteiner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 20:34:09 by esteiner          #+#    #+#             */
-/*   Updated: 2023/02/15 22:46:38 by esteiner         ###   ########.fr       */
+/*   Updated: 2023/02/16 15:52:19 by esteiner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(const char *s)
 	size_t	x;
 
 	x = 0;
+	if (!s)
+		return (0);
 	while (s[x])
 		x++;
 	return (x);
@@ -27,7 +29,7 @@ char	*ft_strchr(const char *s, int c)
 	int	i;
 
 	i = 0;
-	if (s == NULL || *s != '\0')
+	if (s == NULL || *s == '\0')
 		return (0);
 	while (s[i])
 	{

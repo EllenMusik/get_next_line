@@ -6,7 +6,7 @@
 /*   By: esteiner <esteiner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/11 17:56:06 by esteiner          #+#    #+#             */
-/*   Updated: 2023/02/15 23:06:47 by esteiner         ###   ########.fr       */
+/*   Updated: 2023/02/16 18:24:15 by esteiner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ char	*get_the_line(char **remainder, char *nl)
 	char	*temp;
 	int		i;
 
-	printf("test");
 	i = -1;
 	temp = NULL;
 	line = malloc(sizeof(char) * (ft_strlen(*remainder) - ft_strlen(nl) + 1));
@@ -55,7 +54,6 @@ char	*get_the_line(char **remainder, char *nl)
 	temp[i] = '\0';
 	free(*remainder);
 	*remainder = temp;
-	free(temp);
 	return (line);
 }
 
@@ -65,19 +63,7 @@ char	*get_last_line(char **remainder)
 	char	*str;
 
 	i = 0;
-	if (**remainder == '\0')
-	{
-		free(*remainder);
-		*remainder = NULL;
-		return (NULL);
-	}
 	str = malloc(sizeof(char) * ft_strlen(*remainder) + 1);
-	if (!str)
-	{
-		free(*remainder);
-		*remainder = NULL;
-		return (NULL);
-	}
 	while ((*remainder)[i] != '\0')
 	{
 		str[i] = (*remainder)[i];
@@ -98,10 +84,11 @@ char	*check_for_nl(char **remainder, int fd, int *check)
 	str = NULL;
 	nl_char = NULL;
 	temp = NULL;
-	printf("check: %d\n", *check);
 	if (ft_strchr(*remainder, '\n'))
+	{
 		nl_char = ft_strchr(*remainder, '\n');
-	if ((!ft_strchr(*remainder, '\n')) && *check == 0)
+	}
+	else if ((!ft_strchr(*remainder, '\n')) && *check == 0)
 	{
 		str = read_line(fd, check);
 		if (!str)
@@ -110,13 +97,18 @@ char	*check_for_nl(char **remainder, int fd, int *check)
 		free(str);
 		if (!temp)
 			return (NULL);
+		free(*remainder);
 		*remainder = temp;
 		str = check_for_nl(remainder, fd, check);
 	}
-	else if (*check == 0)
+	if (nl_char && *remainder)
+	{
 		str = get_the_line(remainder, nl_char);
-	else if (*check == 1)
+	}
+	else if (*check == 1 && !nl_char && *remainder)
+	{
 		str = get_last_line(remainder);
+	}
 	return (str);
 }
 
@@ -126,19 +118,20 @@ char	*get_next_line(int fd)
 	static char	*remainder;
 	int			check;
 
-	printf("%p\n", remainder);
 	check = 0;
 	line = NULL;
 	if (fd < 0)
 		return (NULL);
 	if (!remainder)
-	{
-		printf("wir sind hier!\n");
 		remainder = read_line(fd, &check);
+	if (*remainder == '\0' && check == 1)
+	{
+		free(remainder);
+		remainder = NULL;
+		return (NULL);
 	}
 	if (remainder)
 	{
-		printf("dann wir sind hier!\n");
 		line = check_for_nl(&remainder, fd, &check);
 	}
 	if (!line)
@@ -147,7 +140,6 @@ char	*get_next_line(int fd)
 		remainder = NULL;
 		return (NULL);
 	}
-	// free(remainder);
 	return (line);
 }
 
@@ -166,10 +158,14 @@ int	main(void)
 	printf("\033[0;31mRETURN2:\e[0m %s\n______________\n", mist);
 	if (mist)
 		free(mist);
-	// mist = get_next_line(fd);
-	// printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
-	// if (mist)
-	// 	free(mist);
+	mist = get_next_line(fd);
+	printf("\033[0;31mRETURN4:\e[0m %s\n______________\n", mist);
+	if (mist)
+		free(mist);
+	mist = get_next_line(fd);
+	printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
+	if (mist)
+		free(mist);
 	// mist = get_next_line(fd);
 	// printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
 	// if (mist)
