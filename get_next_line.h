@@ -6,7 +6,7 @@
 /*   By: esteiner <esteiner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/11 17:57:05 by esteiner          #+#    #+#             */
-/*   Updated: 2023/02/15 20:56:16 by esteiner         ###   ########.fr       */
+/*   Updated: 2023/02/16 19:11:02 by esteiner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 15
+# endif
 
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);

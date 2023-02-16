@@ -6,7 +6,7 @@
 /*   By: esteiner <esteiner@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/11 17:56:06 by esteiner          #+#    #+#             */
-/*   Updated: 2023/02/16 18:24:15 by esteiner         ###   ########.fr       */
+/*   Updated: 2023/02/16 19:44:32 by esteiner         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ char	*get_last_line(char **remainder)
 	str[i] = '\0';
 	free(*remainder);
 	*remainder = NULL;
+	if (str[0] == '\0')
+	{
+		free(str);
+		return (NULL);
+	}
 	return (str);
 }
 
@@ -81,13 +86,9 @@ char	*check_for_nl(char **remainder, int fd, int *check)
 	char	*str;
 	char	*temp;
 
-	str = NULL;
 	nl_char = NULL;
-	temp = NULL;
 	if (ft_strchr(*remainder, '\n'))
-	{
 		nl_char = ft_strchr(*remainder, '\n');
-	}
 	else if ((!ft_strchr(*remainder, '\n')) && *check == 0)
 	{
 		str = read_line(fd, check);
@@ -102,13 +103,9 @@ char	*check_for_nl(char **remainder, int fd, int *check)
 		str = check_for_nl(remainder, fd, check);
 	}
 	if (nl_char && *remainder)
-	{
 		str = get_the_line(remainder, nl_char);
-	}
 	else if (*check == 1 && !nl_char && *remainder)
-	{
 		str = get_last_line(remainder);
-	}
 	return (str);
 }
 
@@ -120,20 +117,18 @@ char	*get_next_line(int fd)
 
 	check = 0;
 	line = NULL;
-	if (fd < 0)
-		return (NULL);
 	if (!remainder)
 		remainder = read_line(fd, &check);
-	if (*remainder == '\0' && check == 1)
+	if (!remainder)
+		return (NULL);
+	if (remainder[0] == '\0' && check == 1)
 	{
 		free(remainder);
 		remainder = NULL;
 		return (NULL);
 	}
 	if (remainder)
-	{
 		line = check_for_nl(&remainder, fd, &check);
-	}
 	if (!line)
 	{
 		free(remainder);
@@ -143,36 +138,36 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-int	main(void)
-{
-	int	fd;
-	char *mist = NULL;
-	fd = open ("text", O_RDONLY);
-	//printf("\033[0;31mhallo\e[0m\n");
-	printf("fd: %i\n", fd);
-	mist = get_next_line(fd);
-	printf("\033[0;31mRETURN1:\e[0m %s\n______________\n", mist);
-	if (mist)
-		free(mist);
-	mist = get_next_line(fd);
-	printf("\033[0;31mRETURN2:\e[0m %s\n______________\n", mist);
-	if (mist)
-		free(mist);
-	mist = get_next_line(fd);
-	printf("\033[0;31mRETURN4:\e[0m %s\n______________\n", mist);
-	if (mist)
-		free(mist);
-	mist = get_next_line(fd);
-	printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
-	if (mist)
-		free(mist);
-	// mist = get_next_line(fd);
-	// printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
-	// if (mist)
-	// 	free(mist);
-	// printf("\033[0;31mRETURN4:\e[0m %s\n", get_next_line(fd));
-	// printf("\033[0;31mRETURN5:\e[0m %s\n", get_next_line(fd));
-	// printf("\033[0;31mRETURN6:\e[0m %s\n", get_next_line(fd));
-	close (fd);
-	return (0);
-}
+// int	main(void)
+// {
+// 	int	fd;
+// 	char *mist = NULL;
+// 	fd = open ("text", O_RDONLY);
+// 	//printf("\033[0;31mhallo\e[0m\n");
+// 	printf("fd: %i\n", fd);
+// 	mist = get_next_line(fd);
+// 	printf("\033[0;31mRETURN1:\e[0m %s\n______________\n", mist);
+// 	if (mist)
+// 		free(mist);
+// 	mist = get_next_line(fd);
+// 	printf("\033[0;31mRETURN2:\e[0m %s\n______________\n", mist);
+// 	if (mist)
+// 		free(mist);
+// 	// mist = get_next_line(fd);
+// 	// printf("\033[0;31mRETURN4:\e[0m %s\n______________\n", mist);
+// 	// if (mist)
+// 	// 	free(mist);
+// 	// mist = get_next_line(fd);
+// 	// printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
+// 	// if (mist)
+// 	// 	free(mist);
+// 	// mist = get_next_line(fd);
+// 	// printf("\033[0;31mRETURN1:\e[0m %s\n", mist);
+// 	// if (mist)
+// 	// 	free(mist);
+// 	// printf("\033[0;31mRETURN4:\e[0m %s\n", get_next_line(fd));
+// 	// printf("\033[0;31mRETURN5:\e[0m %s\n", get_next_line(fd));
+// 	// printf("\033[0;31mRETURN6:\e[0m %s\n", get_next_line(fd));
+// 	close (fd);
+// 	return (0);
+// }
